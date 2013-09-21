@@ -16,19 +16,36 @@ transpose_parallel_per_element_tiled(float in[], float out[])
 	// TODO
     //int i = threadIdx.x;
     //int j = threadIdx.y;
-    int i = blockIdx.x * K + threadIdx.x;
-	int j = blockIdx.y * K + threadIdx.y;    
-    __shared__ float *temp[K][K]; //= (float*)malloc(K*K*sizeof(float));
+    //int i = blockIdx.x * K + threadIdx.x;
+    //int j = blockIdx.y * K + threadIdx.y;    
+    //__shared__ float *temp[K][K]; //= (float*)malloc(K*K*sizeof(float));
     
-    for(i = 0 ; i < K ; i++)
-    {
-        for(j = 0 ; j < K ; j++)
-        {            
-            temp[j + i*K][i] = in[i*K + j][j];
-        }
-    }
+    //for(i = 0 ; i < K ; i++)
+    //{
+    //    for(j = 0 ; j < K ; j++)
+    //    {            
+    //        temp[j + i*K][i] = in[i*K + j][j];
+    //    }
+    //}
+    //syncthreads();
+    //out = temp;
+    
+    
+    //lesson's original code
+    // (i,j) locations of the tile corners for input & output matrices
+    int in_corner_i = blockIdx.x * K, in_corner_j = blockIdx.y * K;
+    int out_corner_i = blockIdx.y * K, out_corner_j = blockIdx.x * K;
+    
+    int x = threadIdx.x, y = threadIdx.y;
+    
+    __shared__ float tile[K][K];
+    
+    // coalesed read from global mem, TRANSPOSED write into shared mem
+    tile[y][x] = in[((in_corner_i + x) + (in_corner_j + y)*N];
     syncthreads();
-    out = temp;
+    
+    out[(out_corner_i + x) + (out_corner_j + y)*N] = tile[x][y];
+    
     
 }
 
