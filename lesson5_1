@@ -41,7 +41,7 @@ transpose_parallel_per_element_tiled(float in[], float out[])
     __shared__ float tile[K][K];
     
     // coalesed read from global mem, TRANSPOSED write into shared mem
-    tile[y][x] = in[((in_corner_i + x) + (in_corner_j + y)*N];
+    tile[y][x] = in[(in_corner_i + x) + (in_corner_j + y)*N];
     syncthreads();
     
     out[(out_corner_i + x) + (out_corner_j + y)*N] = tile[x][y];
