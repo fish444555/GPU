@@ -120,8 +120,8 @@ int main(int argc, char **argv)
  * But this makes for messy code and our goal is teaching, not detailed benchmarking.
  */
 
-	dim3 blocks(1,32);	//TODO, you need to set the proper blocks per grid
-	dim3 threads(1,32);	//TODO, you need to set the proper threads per block
+	dim3 blocks(32,32);	//TODO, you need to set the proper blocks per grid
+	dim3 threads(32,32);	//TODO, you need to set the proper threads per block
 
 	timer.Start();
 	transpose_parallel_per_element_tiled<<<blocks,threads>>>(d_in, d_out);
